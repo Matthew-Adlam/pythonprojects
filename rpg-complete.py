@@ -37,10 +37,13 @@ def findPossibleRoutes():
     possiblerooms = []
     directions = []
     for room in list(rooms[currentRoom].items()):
-        w = str(room) # one string here
-        w = w.split(',') # makes it two so that it can be split 
-        directions += [w[0]]
-        possiblerooms += [w[1]]
+        w = str(room) # one string herea
+        w = w.split(',') # makes it two so that it can be split
+        direction = w[0].strip("('")  # Remove leading "('"
+        room_name = w[1].strip(" ')")  # Remove leading " '" and trailing "')"
+        if direction != 'item':
+            directions.append(direction)
+            possiblerooms.append(room_name)
     print('Possible Rooms:')
     for x in range(0,len(directions)):
         print('Go ' + directions[x] + ' to find the ' + possiblerooms[x])
@@ -181,7 +184,7 @@ while True:
     # if they type 'get' first
     elif move[0] == 'get':
         if 'item' in rooms[currentRoom] and move[1] in rooms[currentRoom]['item'] and move[1] == 'sword':
-            print('Solve a problem to get the sword')
+            print('Solve a problem to get access to the powerful sword')
             a = random.choice(range(1,20))
             b = random.choice(range(1,20))
             answer = a*b
