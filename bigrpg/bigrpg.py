@@ -133,12 +133,12 @@ def showStatus():
     # print the current inventory
     print("Health:" + str(player1.getHealth()))
     print("Inventory : " + str(inventory))
-    global effectTurns
-    print("Effect turns" + str(effectTurns))
-    if effectTurns > 0:
+    if activeEffect != None:
        print('You have the ' + activeEffect + ' effect for ' + str(effectTurns) + ' turns')
-    if "hostile" in rooms[currentRoom]:
-        print("A hostile figure arrives...")
+    if 'hostile' in rooms[currentRoom] and activeEffect != "Invis":
+        battle(hostiles[rooms[currentRoom]['hostile']])
+    elif 'hostile' in rooms[currentRoom] and activeEffect == "Invis":
+        print("The hostile didn't see you due to your invisiblity.")
     # print an item if there is one
     if "item" in rooms[currentRoom] and not "hostile" in rooms[currentRoom]:
         print('You see a ' + rooms[currentRoom]['item'])
@@ -184,7 +184,12 @@ hostilemoves = {
 #future make dungeon not only boss room?
 items = ['Health Potion','Rusty Dagger']
 weapons = []
-hostiles = {'Evil Droid': Players('Evil Droid',1,50)}
+hostiles = {
+    'Evil Droid': Players('Evil Droid',1,50),
+    'Goblin': Players('Goblin',1,30),
+    'Crow': Players('Crow',2,60),
+    'Ghost': Players('Ghost',2,49)
+    }
 noHostileOrItemRooms = ['Main Hallway','Dungeon','Front Doorstep']
 
 def generateRandomLocations():
@@ -265,7 +270,7 @@ def battle(hostile):
             print("Their Health: " + str(hostile.getHealth()))
 
 def gainReward():
-    pick = random.randint(1,3)
+    pick = random.randint(3,3)
     if pick == 1:
         heal = random.randint(10,40)
         print("You have healed for " + str(heal))
@@ -279,8 +284,8 @@ def gainReward():
             battlemoves.update({'Scythe' : BattleMoves('Scythe',15,45,57,"scythe",3)})
     elif pick == 3:
         print("You have gained invisibility for 3 turns! Hostiles will not attack you, but you cannot fight them.")
-        activeEffect == "Invis"
-        global effectTurns
+        global activeEffect,effectTurns
+        activeEffect = "Invis"
         effectTurns = 4
 
 
@@ -297,13 +302,13 @@ if gamestart == False:
 
 while not bossBeaten:
     print('Move '+ str(moveCount))
-    effectTurns -= 1
+    if effectTurns > 0:
+        effectTurns -= 1
+    if effectTurns == 0:
+        activeEffect = None
     showStatus()
-
-    if 'hostile' in rooms[currentRoom] and activeEffect != "Invis":
-        battle(hostiles[rooms[currentRoom]['hostile']])
-    elif 'hostile' in rooms[currentRoom] and activeEffect == "Invis":
-        print("The hostile didn't see you due to your invisiblity.")
+        #moveCount+=1
+        #continue
 
     move = ''
     while move == '':
@@ -319,6 +324,7 @@ while not bossBeaten:
         if move[1] in rooms[currentRoom]:
             # set the current room to the new room
             currentRoom = rooms[currentRoom][move[1]]
+            moveCount+=1
         else:
             print('You can\'t go that way!')
     elif move[0] == 'get':
@@ -327,6 +333,7 @@ while not bossBeaten:
             inventory.append(rooms[currentRoom]['item'])
             print("Got " + rooms[currentRoom]['item'])
             del rooms[currentRoom]['item']
+            moveCount+=1
         else:
             print("Cannot get item.")
     elif move[0] == 'use':
@@ -339,6 +346,7 @@ while not bossBeaten:
             elif item_to_use == "rusty dagger":
                 print("Dagger added to move list.")
                 battlemoves.update({'Rusty Dagger': BattleMoves('Rusty Dagger',10,20,80,"a",2)})
+            moveCount+=1
     else:
         print('bozo')
-    moveCount+=1
+    
