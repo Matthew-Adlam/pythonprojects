@@ -1,6 +1,8 @@
 # for bowls coz i want to.
 
 import random
+import math
+
 selected_name = ""
 skips_names = []
 threes_names = []
@@ -14,8 +16,10 @@ pairs_positions = ["Skip","Lead"]
 singles_positions = ["Player"]
 
 rounds = 0
+mats = 0
 qualifying = False
 random_teams = False
+shuffled_draw = False
 teams = {}
 
 mode = ""
@@ -128,9 +132,34 @@ def getRandomTeams(total_teams):
 #output excel spreadsheet of teams and rounds, even qualifying/ko on another sheet?
 #also potential capability to fill in results (unsure of logistics atm)
 #add ability to be able to input custom teams, not just rng ones
-def generateDraw(teams,rounds):
-     print("not yet")
+def generateDraw(teams,rounds,mats,randomdraw):
 
+    # calculates number of mats required
+
+    mats_required = 0
+    if teams * 2 > mats and rounds < 5:
+         print("Not enough mats out.") #idk do smth else
+    elif rounds == 4: #standard draw
+        mats_required = math.ceil(teams/2)
+    elif rounds == 6:
+        mats_required = math.ceil(teams/3*2)
+    else: #reason not combined with rounds == 4 is this is placeholder
+        mats_required = math.ceil(teams/2)
+         
+
+    randomteam = ""
+    draw = {}
+    if teams % 2 == 1: #creates bye team if uneven
+         teams[len(teams)+ 1] = dict(zip(singles_positions),"BYE")
+    for t in teams:
+        if randomdraw:
+            randomteam = random.randint(0,len(teams))
+            
+        else:
+            randomteam = teams[t]
+        
+            
+    return draw
      
      
 total_teams = int(input("How many teams?"))
@@ -147,10 +176,15 @@ if is_random_teams.upper == "YES" or is_random_teams.upper == "Y":
      random_teams = True
 
 rounds = int(input("How many rounds?"))
+mats = int(input("How many mats?"))
+
+shuffle = input("Is the draw shuffled?")
+if shuffle.upper == "YES" or shuffle.upper == "Y":
+     shuffled_draw = True
 
 getPlayers(total_teams,random_teams)
 if random_teams:
     getRandomTeams(total_teams)
-generateDraw(teams,rounds)
+generateDraw(teams,rounds,mats,shuffled_draw)
 
 #print(teams)
