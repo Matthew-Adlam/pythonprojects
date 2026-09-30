@@ -62,7 +62,4 @@ for s in selected.items():
     for r in reps:
         q = r.replace(' ', '')
         realreps.append(q)
-
     print("Do " + exercisereal + " for " + str(random.choice(realreps)) + " reps.")
-
-    #print(muscle, exercise, reps)
