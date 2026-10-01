@@ -21,6 +21,7 @@ qualifying = False
 random_teams = False
 shuffled_draw = False
 teams = {}
+draw = {}
 
 mode = ""
 
@@ -137,30 +138,40 @@ def generateDraw(teams,rounds,mats,randomdraw):
     # calculates number of mats required
 
     mats_required = 0
-    if teams * 2 > mats and rounds < 5:
+    if len(teams) > mats * 2 and rounds < 5:
          print("Not enough mats out.") #idk do smth else
+         return
     elif rounds == 4: #standard draw
-        mats_required = math.ceil(teams/2)
-    elif rounds == 6:
-        mats_required = math.ceil(teams/3*2)
+        mats_required = math.ceil(len(teams)/2)
+    elif rounds == 6: #for like 6 round singles w markers
+        mats_required = math.ceil(len(teams)/3*2)
     else: #reason not combined with rounds == 4 is this is placeholder
-        mats_required = math.ceil(teams/2)
-         
+        mats_required = math.ceil(len(teams)/2)
 
-    randomteam = ""
-    draw = {}
-    if teams % 2 == 1: #creates bye team if uneven
+    if len(teams) % 2 == 1: #creates bye team if uneven
          teams[len(teams)+ 1] = dict(zip(singles_positions),"BYE")
-    for t in teams:
-        if randomdraw:
-            randomteam = random.randint(0,len(teams))
-            
+
+    team_names = list(teams.values())
+    #make draw here
+    for i in range(len(teams)):
+
+        if i < len(teams) / 2:
+            step = 1
+            start = i % mats
         else:
-            randomteam = teams[t]
-        
-            
+            step = 2
+            start = (i - (len(teams)/2)) % mats
+
+        mats_used = []
+        current_mat = start
+        for _ in range(rounds):
+            while current_mat in mats_used: # if already played on here, move on
+                current_mat = (current_mat + 1) % mats
+            mats_used.append(current_mat)
+            current_mat = (current_mat + step) % mats #
+
+        draw[i + 1] = [int(f) + 1 for f in mats_used]        
     return draw
-     
      
 total_teams = int(input("How many teams?"))
 
@@ -185,6 +196,8 @@ if shuffle.upper == "YES" or shuffle.upper == "Y":
 getPlayers(total_teams,random_teams)
 if random_teams:
     getRandomTeams(total_teams)
-generateDraw(teams,rounds,mats,shuffled_draw)
 
 #print(teams)
+generateDraw(teams,rounds,mats,shuffled_draw)
+
+print(draw)
