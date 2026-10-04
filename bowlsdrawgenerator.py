@@ -172,6 +172,20 @@ def generateDraw(teams,rounds,mats,randomdraw):
 
         draw[i + 1] = [int(f) + 1 for f in mats_used]        
     return draw
+
+def exportDraw(draw):
+    file = "draw.xlsx"
+
+    if not draw:
+         return
+
+    from openpyxl import load_workbook 
+    wb = load_workbook(file)
+
+    for d in draw:
+         print(d['1'])
+     
+    return 0
      
 total_teams = int(input("How many teams?"))
 
@@ -201,3 +215,5 @@ if random_teams:
 generateDraw(teams,rounds,mats,shuffled_draw)
 
 print(draw)
+
+exportDraw(draw)
