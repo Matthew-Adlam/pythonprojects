@@ -3,6 +3,11 @@
 import random
 import math
 
+program = []
+selected = {}
+biasExercises = []
+defaultBias = ['chest','core','core'] 
+
 exercises = {
     'chest': {
         'Push Up': ['10','15','20','failure'],
@@ -40,26 +45,59 @@ exercises = {
     }
 }
 
-selected = {}
+def generateRandomExercises():
+    for outer_key, inner_dict in exercises.items():
+        key, value = random.choice(list(inner_dict.items()))
+        selected[outer_key] = {key: value}
 
-for outer_key, inner_dict in exercises.items():
-    key, value = random.choice(list(inner_dict.items()))
-    selected[outer_key] = {key: value}
+def addBias(bias):
+    counter = 0
+    for b in bias:
+        chosen = b + str(counter)
+        biased = exercises[b]
+        key, value = random.choice(list(biased.items()))
+        selected[chosen] = {key: value}
+        counter += 1
 
-#print(selected)
+def appendExercises():
+    for s in selected.items():
+        t = str(s)
+        clean = t.replace("'", "").replace("{", "").replace("}", "").replace(")", "").replace("]", "").replace("(","").replace("[","")
+        parts = [p.strip() for p in clean.split(",")]
+        muscle = parts[0]
+        exercise = parts[1].split(":")
+        exercisereal = exercise[0]
+        reps1 = exercise[1]
+        reps = parts[2:]
+        reps.append(reps1)
+        realreps = []
+        for r in reps:
+            q = r.replace(' ', '')
+            realreps.append(q)
+        program.append("Do " + exercisereal + " for " + str(random.choice(realreps)) + " reps.")
 
-for s in selected.items():
-    t = str(s)
-    clean = t.replace("'", "").replace("{", "").replace("}", "").replace(")", "").replace("]", "").replace("(","").replace("[","")
-    parts = [p.strip() for p in clean.split(",")]
-    muscle = parts[0]
-    exercise = parts[1].split(":")
-    exercisereal = exercise[0]
-    reps1 = exercise[1]
-    reps = parts[2:]
-    reps.append(reps1)
-    realreps = []
-    for r in reps:
-        q = r.replace(' ', '')
-        realreps.append(q)
-    print("Do " + exercisereal + " for " + str(random.choice(realreps)) + " reps.")
+def displayAndShuffleProgram():
+    random.shuffle(program)
+    for p in program:
+        print(p)
+
+#------------------------------------------------------------------------------------------
+
+for d in defaultBias:
+    biasExercises.append(d)
+
+done = False
+while not done:
+    bias = input("Name an exercise to bias, use the non-plural form. Keep going until done, then select any key to continue.")
+    if bias in exercises:
+        biasExercises.append(bias)
+    else:
+        done = True
+
+#print(biasExercises)
+
+generateRandomExercises()
+if len(biasExercises) > 0:
+    addBias(biasExercises)
+appendExercises()
+displayAndShuffleProgram()
