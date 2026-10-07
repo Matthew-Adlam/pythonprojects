@@ -6,12 +6,14 @@ import math
 program = []
 selected = {}
 biasExercises = []
-defaultBias = ['chest','core','core'] 
+defaultBias = ['chest','core','core','combo','combo'] 
 
 exercises = {
     'chest': {
         'Push Up': ['10','15','20','failure'],
         'Incline Push Up': ['5','10','15','failure'],
+        'Explosive Push Up': [2,3,4,'failure'],
+        'Decline Push Up': ['5','10','15','failure'],
     },
     'shoulder': {
         'Pike Pushups': [5,'failure'],
@@ -29,13 +31,15 @@ exercises = {
     },
     'legs': {
         'Lunges': ['10 each side','failure'],
-        'Squats': [10,15,'failure']
+        'Squats': [10,15,'failure'],
+        'Wall Sit': ['20s','30s','failure']
     },
     'core': {
         'Hollow Hold': ['20s', '30s','failure'],
         'Crunches': [10,15,'failure'],
         'Reverse Crunches': [10,15,'failure'],
         'Mountain Climbers': ['10 each side','20 each side','30 each side','failure'],
+        'V Sits': [10,15,'failure']
     },
     'combo': {
         'Plank': ['30s','1min','failure'],
