@@ -50,7 +50,7 @@ def divider():
 
 def main():
     option = ""
-    math = ["Fibonaci", "Primes", "Divider"]
+    math = ["Fibonacci", "Primes", "Divider"]
     abc = ["A","B","C"]
     for i,s in enumerate(math):
         print(abc[i] + ": " + s)
