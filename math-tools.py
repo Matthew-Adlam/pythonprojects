@@ -25,11 +25,9 @@ def prime():
     number = int(input("Input the number to test if prime:"))
     square_root = math.sqrt(number)
     test_number = 2
-    is_prime = True
 
     while test_number < square_root:
         if number % test_number == 0:
-            is_prime = False
             print("The number " + str(number) + " is not prime.")
             return True
         test_number = test_number + 1
